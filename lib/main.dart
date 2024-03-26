@@ -21,6 +21,11 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
+  TextStyle _tS = TextStyle(
+    color: Colors.black,
+    fontSize: 12,
+  );
+
   const MyHomePage({super.key, required this.title});
 
   final String title;
@@ -30,12 +35,19 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  int _counter = 10;
+  String _phrase = "Clic avant l'explosion";
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+  void _decrementCounter() {
+    if (_counter > 0) {
+        setState(() {
+          _counter--;
+        });
+      } else {
+        setState(() {
+          _phrase = "BOUM !";
+        });
+      }
   }
 
   @override
@@ -49,8 +61,8 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+            Text(
+              '$_phrase',
             ),
             Text(
               '$_counter',
@@ -60,9 +72,9 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+        onPressed: _decrementCounter,
+        tooltip: 'Decrement',
+        child: const Icon(Icons.history),
       ),
     );
   }
