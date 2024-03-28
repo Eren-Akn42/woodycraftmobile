@@ -27,18 +27,27 @@ class Product {
       description: json['description'] ?? 'Pas de description',
       image: json['image'] ?? "Pas d'image",
       price: json['price'] != null ? json['price'].toDouble() : 0.0,
-      created_at: json['created_at'] ?? 'Pas de date de création',
-      updated_at: json['updated_at'] ?? 'Pas de date de mise à jour',
+      // Utilisation de DateTime.parse et gestion des cas où la date est absente
+      created_at: json['created_at'] != null
+          ? DateTime.parse(json['created_at'])
+          : DateTime.now(),
+      updated_at: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'])
+          : DateTime.now(),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'nom': nom,
+      'categorie_id': categorie_id,
+      'name': name,
       'description': description,
-      'prix': prix,
-      'quantite_en_stock': quantiteEnStock,
+      'image': image,
+      'price': price,
+      // Convertir les objets DateTime en String pour la sérialisation
+      'created_at': created_at.toIso8601String(),
+      'updated_at': updated_at.toIso8601String(),
     };
   }
 }

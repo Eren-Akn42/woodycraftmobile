@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'models/Product.dart';
 
 void main() {
   runApp(MyApp());
@@ -40,12 +41,8 @@ class _ProductsPageState extends State<ProductsPage> {
     if (response.statusCode == 200) {
       var data = json.decode(response.body) as List;
       setState(() {
-        products = data
-            .map((product) => {
-                  'nom': product['nom'] ?? 'Nom inconnu',
-                  'prix': product['prix'] ?? '0',
-                })
-            .toList();
+        products =
+            data.map((productJson) => Product.fromJson(productJson)).toList();
       });
     } else {
       throw Exception('Failed to load products');
@@ -61,9 +58,10 @@ class _ProductsPageState extends State<ProductsPage> {
       body: ListView.builder(
         itemCount: products.length,
         itemBuilder: (context, index) {
+          final Product product = products[index] as Product;
           return ListTile(
-            title: Text(products[index]['nom']),
-            subtitle: Text('Prix: ${products[index]['prix']} €'),
+            title: Text(product.name),
+            subtitle: Text('Prix: ${product.price.toString()} €'),
           );
         },
       ),
