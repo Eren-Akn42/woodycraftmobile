@@ -1,19 +1,22 @@
 {
-  "name": "woodycraftmobile",
+  "name": "woodycraftmobile_backend",
   "version": "1.0.0",
-  "description": "A new Flutter project.",
+  "description": "Backend pour une application Flutter de gestion des produits et stocks",
   "main": "index.js",
-  "directories": {
-    "lib": "lib",
-    "test": "test"
-  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "flutter",
+    "backend",
+    "express",
+    "mysql"
+  ],
+  "author": "Eren ARKIN",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.19.2"
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "mysql": "^2.18.1"
   }
 }
