@@ -29,6 +29,100 @@ class ProductsPage extends StatefulWidget {
 class _ProductsPageState extends State<ProductsPage> {
   List<Product> products = [];
 
+  void addProduct(Product product) async {
+    final response = await http.post(
+      Uri.parse('http://10.0.2.2:3000/products'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode({
+        'name': product.name,
+        'price': product.price,
+        'categorie_id': product.categorieId,
+        'description': product.description,
+        'image': product.image,
+      }),
+    );
+
+    if (response.statusCode == 201) {
+      fetchProducts();
+    }
+  }
+
+  void showAddProductDialog(BuildContext context) {
+    TextEditingController _nameController = TextEditingController();
+    TextEditingController _priceController = TextEditingController();
+    TextEditingController _categorieController = TextEditingController();
+    TextEditingController _descriptionController = TextEditingController();
+    TextEditingController _imageController = TextEditingController();
+    // Tu peux ajouter d'autres contrôleurs si nécessaire
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Ajouter un nouveau produit'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                TextField(
+                  controller: _nameController,
+                  decoration: InputDecoration(hintText: "Nom du produit"),
+                ),
+                TextField(
+                  controller: _priceController,
+                  decoration: InputDecoration(hintText: "Prix du produit"),
+                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                ),
+                TextField(
+                  controller: _categorieController,
+                  decoration: InputDecoration(hintText: "Catégorie du produit"),
+                  keyboardType: TextInputType.number,
+                ),
+                TextField(
+                  controller: _descriptionController,
+                  decoration: InputDecoration(hintText: "Description du produit"),
+                  maxLines: null, // Permet de saisir plusieurs lignes si nécessaire
+                ),
+                TextField(
+                  controller: _imageController,
+                  decoration: InputDecoration(hintText: "Nom de l'image"),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Annuler'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Ajouter'),
+              onPressed: () {
+                Product newProduct = Product(
+                  id: 0, // L'ID sera généré par la base de données, donc pas nécessaire ici
+                  name: _nameController.text,
+                  price: double.tryParse(_priceController.text) ?? 0.0,
+                  categorieId: int.tryParse(_categorieController.text) ?? 0,
+                  description: _descriptionController.text,
+                  image: _imageController.text,
+                  created_at: DateTime.now(), // Ou laisser le serveur définir la date
+                  updated_at: DateTime.now(), // Ou laisser le serveur définir la date
+                );
+
+                // Appelle la fonction pour ajouter le produit
+                addProduct(newProduct);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void showProductDetails(Product product) {
     showDialog(
       context: context,
@@ -125,6 +219,7 @@ class _ProductsPageState extends State<ProductsPage> {
     TextEditingController _priceController = TextEditingController(text: product.price.toString());
     TextEditingController _categorieController = TextEditingController(text: product.categorieId.toString());
     TextEditingController _descriptionController = TextEditingController(text: product.description);
+    TextEditingController _imageController = TextEditingController(text: product.image);
     // Ajoute d'autres contrôleurs si nécessaire
 
     showDialog(
@@ -154,6 +249,10 @@ class _ProductsPageState extends State<ProductsPage> {
                   decoration: InputDecoration(hintText: "Description du produit"),
                   maxLines: null, // Permet de saisir plusieurs lignes si nécessaire
                 ),
+                TextField(
+                  controller: _imageController,
+                  decoration: InputDecoration(hintText: "Nom de l'image (format : {image}.png)"),
+                ),
               ],
             ),
           ),
@@ -173,6 +272,7 @@ class _ProductsPageState extends State<ProductsPage> {
                   price: double.tryParse(_priceController.text) ?? product.price,
                   categorieId: int.tryParse(_categorieController.text),
                   description: _descriptionController.text,
+                  image: _imageController.text,
                 );
 
                 // Mise à jour du produit
@@ -288,7 +388,7 @@ class _ProductsPageState extends State<ProductsPage> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {}, // Add your onPressed code here!
+        onPressed: () => showAddProductDialog(context),
         child: Icon(Icons.add),
         backgroundColor: Colors.blue,
       ),

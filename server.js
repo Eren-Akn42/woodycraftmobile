@@ -79,3 +79,17 @@ app.put('/products/:id', (req, res) => {
         res.status(200).send('Produit mis à jour avec succès');
     });
 });
+
+app.post('/products', (req, res) => {
+    const { name, price, categorie_id, description, image } = req.body;
+    const query = 'INSERT INTO products (name, price, categorie_id, description, image) VALUES (?, ?, ?, ?, ?)';
+
+    db.query(query, [name, price, categorie_id, description, image], (err, result) => {
+        if (err) {
+            console.error('Erreur lors de la création du produit :', err);
+            res.status(500).send('Erreur lors de la création du produit');
+            return;
+        }
+        res.status(201).send(`Produit créé avec l'ID: ${result.insertId}`);
+    });
+});
