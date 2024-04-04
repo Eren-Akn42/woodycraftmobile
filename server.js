@@ -27,7 +27,7 @@ db.connect((err) => {
 app.get('/', (req, res) => {
     res.send('Hello World!');
 });
-  
+
 app.listen(port, () => {
     console.log(`Serveur démarré sur http://localhost:${port}`);
 });
@@ -41,5 +41,41 @@ app.get('/products', (req, res) => {
             return;
         }
         res.json(results);
+    });
+});
+
+app.delete('/products/:id', (req, res) => {
+    const { id } = req.params;
+    const query = 'DELETE FROM products WHERE id = ?';
+    db.query(query, [id], (err, result) => {
+        if (err) {
+            console.error('Erreur lors de la suppression du produit :', err);
+            res.status(500).send('Erreur lors de la suppression du produit');
+            return;
+        }
+        if (result.affectedRows === 0) {
+            res.status(404).send('Produit non trouvé');
+            return;
+        }
+        res.status(200).send('Produit supprimé avec succès');
+    });
+});
+
+app.put('/products/:id', (req, res) => {
+    const { id } = req.params;
+    const { name, price, categorie_id, description, image } = req.body;
+    const query = 'UPDATE products SET name = ?, price = ?, categorie_id = ?, description = ?, image = ? WHERE id = ?';
+
+    db.query(query, [name, price, categorie_id, description, image, id], (err, result) => {
+        if (err) {
+            console.error('Erreur lors de la mise à jour du produit :', err);
+            res.status(500).send('Erreur lors de la mise à jour du produit');
+            return;
+        }
+        if (result.affectedRows === 0) {
+            res.status(404).send('Produit non trouvé');
+            return;
+        }
+        res.status(200).send('Produit mis à jour avec succès');
     });
 });
