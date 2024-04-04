@@ -124,6 +124,7 @@ class _ProductsPageState extends State<ProductsPage> {
     TextEditingController _nameController = TextEditingController(text: product.name);
     TextEditingController _priceController = TextEditingController(text: product.price.toString());
     TextEditingController _categorieController = TextEditingController(text: product.categorieId.toString());
+    TextEditingController _descriptionController = TextEditingController(text: product.description);
     // Ajoute d'autres contrôleurs si nécessaire
 
     showDialog(
@@ -148,7 +149,11 @@ class _ProductsPageState extends State<ProductsPage> {
                   decoration: InputDecoration(hintText: "Catégorie du produit"),
                   keyboardType: TextInputType.numberWithOptions(decimal: false),
                 ),
-                // Ajoute d'autres TextFields pour les autres attributs si nécessaire
+                TextField(
+                  controller: _descriptionController,
+                  decoration: InputDecoration(hintText: "Description du produit"),
+                  maxLines: null, // Permet de saisir plusieurs lignes si nécessaire
+                ),
               ],
             ),
           ),
@@ -166,8 +171,8 @@ class _ProductsPageState extends State<ProductsPage> {
                 Product updatedProduct = product.copyWith(
                   name: _nameController.text,
                   price: double.tryParse(_priceController.text) ?? product.price,
-                  categorieId: int.tryParse(_categorieController.text), // Ajoute cette ligne
-                  // Ajoutez d'autres champs ici si nécessaire
+                  categorieId: int.tryParse(_categorieController.text),
+                  description: _descriptionController.text,
                 );
 
                 // Mise à jour du produit
