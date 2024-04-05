@@ -61,45 +61,50 @@ class _ProductsPageState extends State<ProductsPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Ajouter un nouveau produit'),
+          title: const Text('Ajouter un nouveau produit'),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
                 TextField(
                   controller: _nameController,
-                  decoration: InputDecoration(hintText: "Nom du produit"),
+                  decoration: const InputDecoration(hintText: "Nom du produit"),
                 ),
                 TextField(
                   controller: _priceController,
-                  decoration: InputDecoration(hintText: "Prix du produit"),
-                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                  decoration:
+                      const InputDecoration(hintText: "Prix du produit"),
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: true),
                 ),
                 TextField(
                   controller: _categorieController,
-                  decoration: InputDecoration(hintText: "Catégorie du produit"),
+                  decoration:
+                      const InputDecoration(hintText: "Catégorie du produit"),
                   keyboardType: TextInputType.number,
                 ),
                 TextField(
                   controller: _descriptionController,
-                  decoration: InputDecoration(hintText: "Description du produit"),
-                  maxLines: null, // Permet de saisir plusieurs lignes si nécessaire
+                  decoration:
+                      const InputDecoration(hintText: "Description du produit"),
+                  maxLines:
+                      null, // Permet de saisir plusieurs lignes si nécessaire
                 ),
                 TextField(
                   controller: _imageController,
-                  decoration: InputDecoration(hintText: "Nom de l'image"),
+                  decoration: const InputDecoration(hintText: "Nom de l'image"),
                 ),
               ],
             ),
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('Annuler'),
+              child: const Text('Annuler'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text('Ajouter'),
+              child: const Text('Ajouter'),
               onPressed: () {
                 Product newProduct = Product(
                   id: 0, // L'ID sera généré par la base de données, donc pas nécessaire ici
@@ -108,8 +113,10 @@ class _ProductsPageState extends State<ProductsPage> {
                   categorieId: int.tryParse(_categorieController.text) ?? 0,
                   description: _descriptionController.text,
                   image: _imageController.text,
-                  created_at: DateTime.now(), // Ou laisser le serveur définir la date
-                  updated_at: DateTime.now(), // Ou laisser le serveur définir la date
+                  created_at:
+                      DateTime.now(), // Ou laisser le serveur définir la date
+                  updated_at:
+                      DateTime.now(), // Ou laisser le serveur définir la date
                 );
 
                 // Appelle la fonction pour ajouter le produit
@@ -130,9 +137,9 @@ class _ProductsPageState extends State<ProductsPage> {
         return AlertDialog(
           title: const Text(
             'Détails du produit',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 24.0,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 24.0,
             ),
             textAlign: TextAlign.center,
           ),
@@ -149,22 +156,22 @@ class _ProductsPageState extends State<ProductsPage> {
                     fit: BoxFit.cover,
                   ),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 // Nom du produit
                 Text(
                   'Nom: ${product.name}',
                   style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20.0,
                   ),
                 ),
-                SizedBox(height: 5), // Espace entre les éléments
+                const SizedBox(height: 5),
                 // Prix
                 Text('Prix: ${product.price.toString()} €'),
-                SizedBox(height: 5),
+                const SizedBox(height: 5),
                 // Catégorie ID
                 Text('Catégorie : ${product.categorieId}'),
-                SizedBox(height: 5),
+                const SizedBox(height: 5),
                 // Description
                 Text('Description: ${product.description}'),
               ],
@@ -172,7 +179,7 @@ class _ProductsPageState extends State<ProductsPage> {
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('Fermer'),
+              child: const Text('Fermer'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -183,11 +190,9 @@ class _ProductsPageState extends State<ProductsPage> {
     );
   }
 
-
-
   void deleteProduct(int id) async {
     final response =
-    await http.delete(Uri.parse('http://10.0.2.2:3000/products/$id'));
+        await http.delete(Uri.parse('http://10.0.2.2:3000/products/$id'));
 
     if (response.statusCode == 200) {
       setState(() {
@@ -206,59 +211,65 @@ class _ProductsPageState extends State<ProductsPage> {
     );
 
     if (response.statusCode == 200) {
-      // Si le serveur retourne un succès, rafraîchir l'interface utilisateur
       fetchProducts();
-    } else {
-      // Si le serveur ne retourne pas un succès, afficher un message d'erreur
-      // TODO: implémentez une gestion d'erreur appropriée
     }
   }
 
   void showEditDialog(Product product) {
-    TextEditingController _nameController = TextEditingController(text: product.name);
-    TextEditingController _priceController = TextEditingController(text: product.price.toString());
-    TextEditingController _categorieController = TextEditingController(text: product.categorieId.toString());
-    TextEditingController _descriptionController = TextEditingController(text: product.description);
-    TextEditingController _imageController = TextEditingController(text: product.image);
-    // Ajoute d'autres contrôleurs si nécessaire
+    TextEditingController _nameController =
+        TextEditingController(text: product.name);
+    TextEditingController _priceController =
+        TextEditingController(text: product.price.toString());
+    TextEditingController _categorieController =
+        TextEditingController(text: product.categorieId.toString());
+    TextEditingController _descriptionController =
+        TextEditingController(text: product.description);
+    TextEditingController _imageController =
+        TextEditingController(text: product.image);
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Modifier le produit'),
+          title: const Text('Modifier le produit'),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
                 TextField(
                   controller: _nameController,
-                  decoration: InputDecoration(hintText: "Nom du produit"),
+                  decoration: const InputDecoration(hintText: "Nom du produit"),
                 ),
                 TextField(
                   controller: _priceController,
-                  decoration: InputDecoration(hintText: "Prix du produit"),
-                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                  decoration:
+                      const InputDecoration(hintText: "Prix du produit"),
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: true),
                 ),
                 TextField(
                   controller: _categorieController,
-                  decoration: InputDecoration(hintText: "Catégorie du produit"),
-                  keyboardType: TextInputType.numberWithOptions(decimal: false),
+                  decoration:
+                      const InputDecoration(hintText: "Catégorie du produit"),
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: false),
                 ),
                 TextField(
                   controller: _descriptionController,
-                  decoration: InputDecoration(hintText: "Description du produit"),
-                  maxLines: null, // Permet de saisir plusieurs lignes si nécessaire
+                  decoration:
+                      const InputDecoration(hintText: "Description du produit"),
+                  maxLines: null,
                 ),
                 TextField(
                   controller: _imageController,
-                  decoration: InputDecoration(hintText: "Nom de l'image (format : {image}.png)"),
+                  decoration: const InputDecoration(
+                      hintText: "Nom de l'image (format : {image}.png)"),
                 ),
               ],
             ),
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('Annuler'),
+              child: const Text('Annuler'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -266,16 +277,15 @@ class _ProductsPageState extends State<ProductsPage> {
             TextButton(
               child: Text('Enregistrer'),
               onPressed: () {
-                // Mise à jour de la création d'un nouvel objet produit avec les données mises à jour
                 Product updatedProduct = product.copyWith(
                   name: _nameController.text,
-                  price: double.tryParse(_priceController.text) ?? product.price,
+                  price:
+                      double.tryParse(_priceController.text) ?? product.price,
                   categorieId: int.tryParse(_categorieController.text),
                   description: _descriptionController.text,
                   image: _imageController.text,
                 );
 
-                // Mise à jour du produit
                 updateProduct(updatedProduct);
                 Navigator.of(context).pop();
               },
@@ -286,7 +296,6 @@ class _ProductsPageState extends State<ProductsPage> {
     );
   }
 
-
   @override
   void initState() {
     super.initState();
@@ -294,8 +303,7 @@ class _ProductsPageState extends State<ProductsPage> {
   }
 
   fetchProducts() async {
-    final response =
-        await http.get(Uri.parse('http://10.0.2.2:3000/products'));
+    final response = await http.get(Uri.parse('http://10.0.2.2:3000/products'));
     if (response.statusCode == 200) {
       var data = json.decode(response.body) as List;
       setState(() {
@@ -314,22 +322,21 @@ class _ProductsPageState extends State<ProductsPage> {
         title: const Text(
           'Liste des produits',
           style: TextStyle(
-            color: Colors.white, // Met le texte en blanc
-            fontWeight: FontWeight.bold, // Rend le texte gras
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
           ),
         ),
-        centerTitle: true, // Centre le titre dans l'AppBar
-        backgroundColor:
-            Colors.blue, // S'assure que la couleur de fond est bleue
+        centerTitle: true,
+        backgroundColor: Colors.blue,
       ),
       body: ListView.builder(
         itemCount: products.length,
         itemBuilder: (context, index) {
           final Product product = products[index];
-          return Card( // J'ai utilisé un Card pour un meilleur design
+          return Card(
             child: ListTile(
               leading: CircleAvatar(
-                backgroundImage: AssetImage('assets/${product.image}'), // Assure-toi que l'image existe dans le dossier assets
+                backgroundImage: AssetImage('assets/${product.image}'),
                 backgroundColor: Colors.transparent,
               ),
               title: Text(product.name),
@@ -344,12 +351,12 @@ class _ProductsPageState extends State<ProductsPage> {
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   IconButton(
-                      icon: Icon(Icons.visibility, color: Colors.blue),
+                      icon: const Icon(Icons.visibility, color: Colors.blue),
                       onPressed: () {
                         showProductDetails(products[index]);
                       }),
                   IconButton(
-                      icon: Icon(Icons.edit, color: Colors.blue),
+                      icon: const Icon(Icons.edit, color: Colors.blue),
                       onPressed: () {
                         showEditDialog(products[index]);
                       }),
@@ -360,20 +367,21 @@ class _ProductsPageState extends State<ProductsPage> {
                           context: context,
                           builder: (BuildContext context) {
                             return AlertDialog(
-                              title: Text('Confirmation'),
-                              content: Text('Voulez-vous vraiment supprimer ce produit ?'),
+                              title: const Text('Confirmation'),
+                              content: const Text(
+                                  'Voulez-vous vraiment supprimer ce produit ?'),
                               actions: <Widget>[
                                 TextButton(
                                   child: Text('Annuler'),
                                   onPressed: () {
-                                    Navigator.of(context).pop(); // Fermer le dialogue
+                                    Navigator.of(context).pop();
                                   },
                                 ),
                                 TextButton(
-                                  child: Text('Supprimer'),
+                                  child: const Text('Supprimer'),
                                   onPressed: () {
-                                    deleteProduct(product.id); // Appeler la fonction de suppression
-                                    Navigator.of(context).pop(); // Fermer le dialogue
+                                    deleteProduct(product.id);
+                                    Navigator.of(context).pop();
                                   },
                                 ),
                               ],
