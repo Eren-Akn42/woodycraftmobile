@@ -1,5 +1,6 @@
 const express = require('express');
 const mysql = require('mysql');
+const bcrypt = require('bcrypt');
 const cors = require('cors');
 
 const app = express();
@@ -91,5 +92,32 @@ app.post('/products', (req, res) => {
             return;
         }
         res.status(201).send(`Produit créé avec l'ID: ${result.insertId}`);
+    });
+});
+
+app.post('/login', (req, res) => {
+    const { username, password } = req.body;
+    const query = 'SELECT * FROM admins WHERE username = ?';
+    db.query(query, [username], (err, results) => {
+        if (err) {
+            console.error('Erreur lors de la vérification de l\'utilisateur:', err);
+            return res.status(500).json({ success: false, message: "Erreur serveur" });
+        }
+        if (results.length > 0) {
+            const user = results[0];
+            bcrypt.compare(password, user.password, (err, isMatch) => {
+                if (err) {
+                    console.error('Erreur lors de la vérification du mot de passe:', err);
+                    return res.status(500).json({ success: false, message: "Erreur serveur" });
+                }
+                if (isMatch) {
+                    res.json({ success: true, message: "Authentification réussie" });
+                } else {
+                    res.status(401).json({ success: false, message: "Identifiants incorrects" });
+                }
+            });
+        } else {
+            res.status(401).json({ success: false, message: "Identifiants incorrects" });
+        }
     });
 });
