@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'products.dart';
+import 'main_page.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -25,8 +26,8 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     if (response.statusCode == 200) {
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => ProductsPage()));
+      Navigator.of(context)
+          .pushReplacement(MaterialPageRoute(builder: (context) => MainPage()));
     } else {
       showDialog(
         context: context,
