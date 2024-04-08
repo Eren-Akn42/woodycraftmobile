@@ -64,10 +64,12 @@ app.delete('/products/:id', (req, res) => {
 
 app.put('/products/:id', (req, res) => {
     const { id } = req.params;
-    const { name, price, categorie_id, description, image } = req.body;
-    const query = 'UPDATE products SET name = ?, price = ?, categorie_id = ?, description = ?, image = ? WHERE id = ?';
+    // Assurez-vous d'inclure quantity dans la déconstruction de req.body si vous l'envoyez depuis le client.
+    const { name, price, categorie_id, description, image, quantity } = req.body;
+    const query = 'UPDATE products SET name = ?, price = ?, categorie_id = ?, description = ?, image = ?, quantity = ? WHERE id = ?';
 
-    db.query(query, [name, price, categorie_id, description, image, id], (err, result) => {
+    // Ajoutez quantity à la liste des paramètres passés à db.query.
+    db.query(query, [name, price, categorie_id, description, image, quantity, id], (err, result) => {
         if (err) {
             console.error('Erreur lors de la mise à jour du produit :', err);
             res.status(500).send('Erreur lors de la mise à jour du produit');
@@ -81,11 +83,12 @@ app.put('/products/:id', (req, res) => {
     });
 });
 
-app.post('/products', (req, res) => {
-    const { name, price, categorie_id, description, image } = req.body;
-    const query = 'INSERT INTO products (name, price, categorie_id, description, image) VALUES (?, ?, ?, ?, ?)';
 
-    db.query(query, [name, price, categorie_id, description, image], (err, result) => {
+app.post('/products', (req, res) => {
+    const { name, price, categorie_id, description, image, quantity } = req.body;
+    const query = 'INSERT INTO products (name, price, categorie_id, description, image, quantity) VALUES (?, ?, ?, ?, ?, ?)';
+
+    db.query(query, [name, price, categorie_id, description, image, quantity], (err, result) => {
         if (err) {
             console.error('Erreur lors de la création du produit :', err);
             res.status(500).send('Erreur lors de la création du produit');
@@ -119,5 +122,17 @@ app.post('/login', (req, res) => {
         } else {
             res.status(401).json({ success: false, message: "Identifiants incorrects" });
         }
+    });
+});
+
+app.get('/products/lowstock', (req, res) => {
+    const query = 'SELECT * FROM products WHERE quantity <= 5';
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Erreur lors de la récupération des produits à faible stock :', err);
+            res.status(500).send('Erreur lors de la récupération des produits à faible stock');
+            return;
+        }
+        res.json(results);
     });
 });

@@ -58,6 +58,7 @@ class _ProductsPageState extends State<ProductsPage> {
     TextEditingController _categorieController = TextEditingController();
     TextEditingController _descriptionController = TextEditingController();
     TextEditingController _imageController = TextEditingController();
+    TextEditingController _quantityController = TextEditingController();
 
     showDialog(
       context: context,
@@ -90,6 +91,11 @@ class _ProductsPageState extends State<ProductsPage> {
                   controller: _imageController,
                   decoration: InputDecoration(hintText: "Nom de l'image"),
                 ),
+                TextField(
+                  controller: _quantityController,
+                  decoration: InputDecoration(hintText: "Quantité"),
+                  keyboardType: TextInputType.number,
+                ),
               ],
             ),
           ),
@@ -110,6 +116,7 @@ class _ProductsPageState extends State<ProductsPage> {
                   categorieId: int.parse(_categorieController.text),
                   description: _descriptionController.text,
                   image: _imageController.text,
+                  quantity: int.parse(_quantityController.text),
                   createdAt: DateTime.now(),
                   updatedAt: DateTime.now(),
                 );
@@ -150,6 +157,8 @@ class _ProductsPageState extends State<ProductsPage> {
                 Text('Catégorie : ${product.categorieId}'),
                 SizedBox(height: 10),
                 Text('Prix : ${product.price.toString()} €'),
+                SizedBox(height: 10),
+                Text('Quantité : ${product.quantity}'),
                 SizedBox(height: 10),
                 Text('Description : ${product.description}'),
                 SizedBox(height: 10),
@@ -262,6 +271,8 @@ class _ProductsPageState extends State<ProductsPage> {
         TextEditingController(text: product.description);
     TextEditingController _imageController =
         TextEditingController(text: product.image);
+    TextEditingController _quantityController =
+        TextEditingController(text: product.quantity.toString());
 
     showDialog(
       context: context,
@@ -279,6 +290,11 @@ class _ProductsPageState extends State<ProductsPage> {
                   controller: _priceController,
                   decoration: InputDecoration(hintText: "Prix du produit"),
                   keyboardType: TextInputType.numberWithOptions(decimal: true),
+                ),
+                TextField(
+                  controller: _quantityController,
+                  decoration: InputDecoration(hintText: "Quantité"),
+                  keyboardType: TextInputType.number,
                 ),
                 TextField(
                   controller: _categorieController,
@@ -313,6 +329,7 @@ class _ProductsPageState extends State<ProductsPage> {
                   categorieId: int.parse(_categorieController.text),
                   description: _descriptionController.text,
                   image: _imageController.text,
+                  quantity: int.parse(_quantityController.text),
                   createdAt: product.createdAt, // Garde la date de création
                   updatedAt:
                       DateTime.now(), // Met à jour la date de modification

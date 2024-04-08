@@ -5,6 +5,7 @@ class Product {
   final int categorieId;
   final String description;
   final String image;
+  final int quantity; // Nouvelle propriété ajoutée
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -15,6 +16,7 @@ class Product {
     required this.categorieId,
     required this.description,
     required this.image,
+    required this.quantity,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -27,6 +29,7 @@ class Product {
       categorieId: json['categorie_id'],
       description: json['description'],
       image: json['image'],
+      quantity: json['quantity'], // Ajout de la quantité depuis JSON
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'])
           : DateTime.now(),
@@ -44,6 +47,7 @@ class Product {
       'categorie_id': categorieId,
       'description': description,
       'image': image,
+      'quantity': quantity, // Inclure la quantité dans le JSON
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt.toIso8601String(),
     };
@@ -56,6 +60,7 @@ class Product {
     int? categorieId,
     String? description,
     String? image,
+    int? quantity, // Permettre la modification de la quantité
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -66,6 +71,7 @@ class Product {
       categorieId: categorieId ?? this.categorieId,
       description: description ?? this.description,
       image: image ?? this.image,
+      quantity: quantity ?? this.quantity, // Copie de la quantité
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
