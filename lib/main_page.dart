@@ -10,10 +10,16 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
 
-  List<Widget> _pages = [
-    ProductsPage(),
-    StocksPage(),
-  ];
+  Widget _getPage(int index) {
+    switch (index) {
+      case 0:
+        return ProductsPage();
+      case 1:
+        return StocksPage();
+      default:
+        return Center(child: Text('Page non trouvée'));
+    }
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -26,7 +32,7 @@ class _MainPageState extends State<MainPage> {
     return Scaffold(
       body: IndexedStack(
         index: _selectedIndex,
-        children: _pages,
+        children: List<Widget>.generate(2, (index) => _getPage(index)),
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[

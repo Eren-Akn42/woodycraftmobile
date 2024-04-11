@@ -79,9 +79,7 @@ class _StocksPageState extends State<StocksPage> {
         return AlertDialog(
           title: Text('Augmenter le stock de ${product.name}'),
           content: SingleChildScrollView(
-            // Utilisez un SingleChildScrollView
             child: Column(
-              // Remplacez GridView par Column
               mainAxisSize: MainAxisSize.min,
               children: <int>[5, 10, 20, 50, 100].map((int value) {
                 return ElevatedButton(
@@ -126,7 +124,7 @@ class _StocksPageState extends State<StocksPage> {
           return Card(
             child: ListTile(
               leading: Image.asset(
-                'assets/${product.image}', // Ajustez cette ligne en fonction du nom du fichier dans vos assets
+                'assets/${product.image}',
                 width: 50,
                 height: 50,
                 fit: BoxFit.cover,
@@ -139,7 +137,7 @@ class _StocksPageState extends State<StocksPage> {
                 '${product.quantity}',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 20, // Taille de police plus grande pour la quantité
+                  fontSize: 20,
                 ),
               ),
               onTap: () => showIncreaseStockDialog(product),

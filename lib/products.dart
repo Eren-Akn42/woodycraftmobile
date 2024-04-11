@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'dart:async';
 import 'models/Product.dart';
 
 class ProductsPage extends StatefulWidget {
@@ -11,11 +12,25 @@ class ProductsPage extends StatefulWidget {
 
 class _ProductsPageState extends State<ProductsPage> {
   List<Product> products = [];
+  Timer? _timer;
 
   @override
   void initState() {
     super.initState();
     fetchProducts();
+    _startAutoRefresh();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  void _startAutoRefresh() {
+    _timer = Timer.periodic(Duration(seconds: 5), (timer) {
+      fetchProducts();
+    });
   }
 
   fetchProducts() async {
@@ -80,7 +95,6 @@ class _ProductsPageState extends State<ProductsPage> {
                 TextField(
                   controller: _categorieController,
                   decoration: InputDecoration(hintText: "Catégorie du produit"),
-                  keyboardType: TextInputType.number,
                 ),
                 TextField(
                   controller: _descriptionController,
@@ -109,19 +123,31 @@ class _ProductsPageState extends State<ProductsPage> {
             TextButton(
               child: Text('Ajouter'),
               onPressed: () {
-                Product newProduct = Product(
-                  id: 0,
-                  name: _nameController.text,
-                  price: double.parse(_priceController.text),
-                  categorieId: int.parse(_categorieController.text),
-                  description: _descriptionController.text,
-                  image: _imageController.text,
-                  quantity: int.parse(_quantityController.text),
-                  createdAt: DateTime.now(),
-                  updatedAt: DateTime.now(),
-                );
-                addProduct(newProduct);
-                Navigator.of(context).pop();
+                if (_nameController.text.isEmpty ||
+                    _priceController.text.isEmpty ||
+                    _categorieController.text.isEmpty ||
+                    _descriptionController.text.isEmpty ||
+                    _imageController.text.isEmpty ||
+                    _quantityController.text.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                        content: Text('Tous les champs sont obligatoires')),
+                  );
+                } else {
+                  Product newProduct = Product(
+                    id: 0,
+                    name: _nameController.text,
+                    price: double.parse(_priceController.text),
+                    categorieId: int.parse(_categorieController.text),
+                    description: _descriptionController.text,
+                    image: _imageController.text,
+                    quantity: int.parse(_quantityController.text),
+                    createdAt: DateTime.now(),
+                    updatedAt: DateTime.now(),
+                  );
+                  addProduct(newProduct);
+                  Navigator.of(context).pop();
+                }
               },
             ),
           ],
@@ -201,28 +227,19 @@ class _ProductsPageState extends State<ProductsPage> {
           final product = products[index];
           return Card(
             child: ListTile(
-              leading: product.image != null
-                  ? Image.asset(
-                      'assets/${product.image}',
-                      width: 50,
-                      height: 50,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        // Si l'image ne se charge pas, on affiche une icône par défaut
-                        return SizedBox(
-                          width: 50,
-                          height: 50,
-                          child: Center(
-                              child: Icon(Icons.image, color: Colors.grey)),
-                        );
-                      },
-                    )
-                  : SizedBox(
-                      width: 50,
-                      height: 50,
-                      child:
-                          Center(child: Icon(Icons.image, color: Colors.grey)),
-                    ),
+              leading: Image.asset(
+                'assets/${product.image}',
+                width: 50,
+                height: 50,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return SizedBox(
+                    width: 50,
+                    height: 50,
+                    child: Center(child: Icon(Icons.image, color: Colors.grey)),
+                  );
+                },
+              ),
               title: Text(
                 product.name,
                 style: TextStyle(color: Colors.black),
@@ -323,16 +340,15 @@ class _ProductsPageState extends State<ProductsPage> {
               child: Text('Modifier'),
               onPressed: () {
                 Product updatedProduct = Product(
-                  id: product.id, // Garde l'ID inchangé
+                  id: product.id,
                   name: _nameController.text,
                   price: double.parse(_priceController.text),
                   categorieId: int.parse(_categorieController.text),
                   description: _descriptionController.text,
                   image: _imageController.text,
                   quantity: int.parse(_quantityController.text),
-                  createdAt: product.createdAt, // Garde la date de création
-                  updatedAt:
-                      DateTime.now(), // Met à jour la date de modification
+                  createdAt: product.createdAt,
+                  updatedAt: DateTime.now(),
                 );
                 updateProduct(updatedProduct);
                 Navigator.of(context).pop();

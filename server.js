@@ -8,10 +8,8 @@ const port = 3000;
 
 app.use(cors());
 
-// Middleware pour parser le corps des requêtes en JSON
 app.use(express.json());
 
-// Configuration de la connexion à la base de données
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
@@ -22,11 +20,6 @@ const db = mysql.createConnection({
 db.connect((err) => {
     if (err) throw err;
     console.log('Connecté à la base de données MySQL !');
-});
-
-// Définition d'une route simple pour tester
-app.get('/', (req, res) => {
-    res.send('Hello World!');
 });
 
 app.listen(port, () => {
@@ -64,11 +57,9 @@ app.delete('/products/:id', (req, res) => {
 
 app.put('/products/:id', (req, res) => {
     const { id } = req.params;
-    // Assurez-vous d'inclure quantity dans la déconstruction de req.body si vous l'envoyez depuis le client.
     const { name, price, categorie_id, description, image, quantity } = req.body;
     const query = 'UPDATE products SET name = ?, price = ?, categorie_id = ?, description = ?, image = ?, quantity = ? WHERE id = ?';
 
-    // Ajoutez quantity à la liste des paramètres passés à db.query.
     db.query(query, [name, price, categorie_id, description, image, quantity, id], (err, result) => {
         if (err) {
             console.error('Erreur lors de la mise à jour du produit :', err);
@@ -82,7 +73,6 @@ app.put('/products/:id', (req, res) => {
         res.status(200).send('Produit mis à jour avec succès');
     });
 });
-
 
 app.post('/products', (req, res) => {
     const { name, price, categorie_id, description, image, quantity } = req.body;
